@@ -6,5 +6,6 @@ namespace ProfileAPI.Services
         Profile GetProfileByEmail(string email);
         void CreateProfile(Profile profile);
         void UpdateProfile(Profile profile);
-        void DeleteProfile(string email);    }
+        void DeleteProfile(string email);    
+    }
 }

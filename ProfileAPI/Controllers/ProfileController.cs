@@ -33,14 +33,6 @@ namespace ProfileAPI.Controllers
             {
                 return BadRequest("Email is null or empty.");
             }
-            string cacheKey = $"profile:{email}";
-            byte[]? cachedProfileBytes = await _distributedCache.GetAsync(cacheKey);
-
-            if (cachedProfileBytes != null)
-            {
-                var cachedProfile = JsonSerializer.Deserialize<List<Profile>>(Encoding.UTF8.GetString(cachedProfileBytes));
-                return Ok(cachedProfile);
-            }
             var profile = _profileService.GetProfileByEmail(email);
             return Ok(profile);
         }
@@ -58,12 +50,8 @@ namespace ProfileAPI.Controllers
                 return BadRequest(("Profile with same Email already exists"));
             }
             
-
             _profileService.CreateProfile(profile);
 
-
-            string cacheKey = $"profile:{profile.Email}";
-            _distributedCache.RemoveAsync(cacheKey);
             return Ok(profile);
         }
 
@@ -91,8 +79,6 @@ namespace ProfileAPI.Controllers
 
             _profileService.UpdateProfile(existingProfile);
 
-            string cacheKey = $"profile:{"profile.Email"}";
-            _distributedCache.RemoveAsync(cacheKey);
             return Ok(existingProfile);
         }
 
@@ -108,8 +94,6 @@ namespace ProfileAPI.Controllers
 
             _profileService.DeleteProfile(email);
 
-            string cacheKey = $"profile:{email}";
-            _distributedCache.RemoveAsync(cacheKey);
             return Ok();
         }
 
